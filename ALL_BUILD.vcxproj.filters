@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Projekte\ESRA_efficient_software_rendering_algo\cmakelists.txt" />
+    <CustomBuild Include="C:\Projekte\rendy\cmakelists.txt" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

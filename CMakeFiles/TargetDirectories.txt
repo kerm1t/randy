@@ -1,3 +1,3 @@
-C:/Projekte/ESRA_efficient_software_rendering_algo/CMakeFiles/rend.dir
-C:/Projekte/ESRA_efficient_software_rendering_algo/CMakeFiles/ALL_BUILD.dir
-C:/Projekte/ESRA_efficient_software_rendering_algo/CMakeFiles/ZERO_CHECK.dir
+C:/Projekte/rendy/CMakeFiles/rendy.dir
+C:/Projekte/rendy/CMakeFiles/ALL_BUILD.dir
+C:/Projekte/rendy/CMakeFiles/ZERO_CHECK.dir

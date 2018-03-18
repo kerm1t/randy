@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Projekte\ESRA_efficient_software_rendering_algo\CMakeFiles\7c0025ac371131de243dce1f0e87e630\generate.stamp.rule">
+    <CustomBuild Include="C:\Projekte\rendy\CMakeFiles\d06224a127b289b9009a98e3d3e2f7c4\generate.stamp.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{4014A3D2-8AF4-324A-8DB4-D2FE3716989C}</UniqueIdentifier>
+      <UniqueIdentifier>{95EA9483-BB3C-341A-AC7D-DEB86FD87096}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
