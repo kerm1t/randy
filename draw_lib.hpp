@@ -5,6 +5,11 @@
 #include "tgaimage.h"
 #include "algebra.h"
 
+typedef struct
+{
+  float p[500][500];
+} zbuffer;
+
 int draw_progress(unsigned char * data)
 {
   /*  char r, g, b;
@@ -182,6 +187,95 @@ void triangle_filled(TGAImage & img, vec2 p0, vec2 p1, vec2 p2, TGAColor col = T
   }
 }
 
+void triangle_filled(TGAImage & img, vec3 p0, vec3 p1, vec3 p2, TGAColor col = TGAColor(255, 255, 255, 255)) // same as above, but with vec3
+{
+  // sortiere nach y
+  vec3 top, middle, bottom, tmp;
+  if (p1.y < p0.y)
+  {
+    top = p1;
+    middle = p0;
+  }
+  else
+  {
+    top = p0;
+    middle = p1;
+  }
+  if (p2.y < middle.y)
+  {
+    if (p2.y < top.y)
+    {
+      bottom = middle;
+      middle = top;
+      top = p2;
+    }
+    else
+    {
+      bottom = middle;
+      middle = p2;
+    }
+  }
+  else
+  {
+    bottom = p2;
+  }
+
+  int xarr[1000]; // 2do: vector instead of fixed array (depends on screen dimensions)
+  int xarr2[1000];
+  bresenham_arr(img, top.x, top.y, middle.x, middle.y, xarr, col);
+  bresenham_arr(img, top.x, top.y, bottom.x, bottom.y, xarr2, col);
+  bresenham_arr(img, middle.x, middle.y, bottom.x, bottom.y, xarr, col);
+  for (int y = top.y; y < bottom.y; y++)
+  {
+    bresenham(img, xarr[y], y, xarr2[y], y, col); // man kann sogar noch einfacher mit x-Schleife schreiben
+  }
+}
+
+void triangle_filled(TGAImage & img, const zbuffer & zbuf, vec3 p0, vec3 p1, vec3 p2, TGAColor col = TGAColor(255, 255, 255, 255)) // same as above, but with vec3
+// ist aber eigentlich doof, als vec3, da wir ja das dreieck auf dem Bildschirm zeichnen, also
+// brauchen wir 2D Koordinaten!
+{
+  // sortiere nach y
+  vec3 top, middle, bottom, tmp;
+  if (p1.y < p0.y)
+  {
+    top = p1;
+    middle = p0;
+  }
+  else
+  {
+    top = p0;
+    middle = p1;
+  }
+  if (p2.y < middle.y)
+  {
+    if (p2.y < top.y)
+    {
+      bottom = middle;
+      middle = top;
+      top = p2;
+    }
+    else
+    {
+      bottom = middle;
+      middle = p2;
+    }
+  }
+  else
+  {
+    bottom = p2;
+  }
+
+  int xarr[1000]; // 2do: vector instead of fixed array (depends on screen dimensions)
+  int xarr2[1000];
+  bresenham_arr(img, top.x, top.y, middle.x, middle.y, xarr, col);
+  bresenham_arr(img, top.x, top.y, bottom.x, bottom.y, xarr2, col);
+  bresenham_arr(img, middle.x, middle.y, bottom.x, bottom.y, xarr, col);
+  for (int y = top.y; y < bottom.y; y++)
+  {
+    bresenham(img, xarr[y], y, xarr2[y], y, col); // man kann sogar noch einfacher mit x-Schleife schreiben
+  }
+}
 /*
 void bresenham_circle(FrameBuf2D * fbuf, int x0, int y0, int radius, const glm::vec3 col, unsigned char * data) // https://de.wikipedia.org/wiki/Bresenham-Algorithmus
 {

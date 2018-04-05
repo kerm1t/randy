@@ -14,7 +14,9 @@ const TGAColor white = TGAColor(255, 255, 255, 255);
 const TGAColor red   = TGAColor(255, 0,   0,   255);
 const TGAColor green = TGAColor(0, 255, 0, 255);
 
-void lesson1(TGAImage & image)
+const zbuffer zbuf;
+
+void lesson1(TGAImage & image) // draw wireframe
 {
   std::vector <obj::CPart> v_parts;
   obj::CLoader_OBJ objload;
@@ -51,7 +53,7 @@ void triangle(vec2 t0, vec2 t1, vec2 t2, TGAImage &image, TGAColor color)
   bresenham(image, t2, t0, color);
 }
 
-void lesson2(TGAImage & image)
+void lesson2(TGAImage & image) // draw 3 filled triangles
 {
   vec2 t0[3] = { vec2(10, 70),   vec2(50, 160),  vec2(70, 80) };
   vec2 t1[3] = { vec2(180, 50),  vec2(150, 1),   vec2(70, 180) };
@@ -64,7 +66,7 @@ void lesson2(TGAImage & image)
   triangle_filled(image, t2[0], t2[1], t2[2],  green);
 }
 
-void lesson2b(TGAImage & image)
+void lesson2b(TGAImage & image) // draw african head as filled triangles
 {
   std::vector <obj::CPart> v_parts;
   obj::CLoader_OBJ objload;
@@ -91,6 +93,87 @@ void lesson2b(TGAImage & image)
   }
 }
 
+void lesson2c(TGAImage & image) // draw african head with **simple** shading
+{
+  std::vector <obj::CPart> v_parts;
+  obj::CLoader_OBJ objload;
+
+  objload.loadOBJParts("african_head.obj", v_parts);
+
+  std::cout << v_parts.size() << std::endl;
+  for (int i = 0; i < v_parts.size(); i++)
+  {
+    for (int j = 0; j < v_parts[i].vertices.size(); j += 3)
+    {
+//      if (v_parts[i].vertices[j + 2].y >= -.2) // filters some "backfaces", as we do not have z-buffer yet
+      {
+        vec3 p0, p1, p2; // must go to vec3 now, in order to compute cross product (s.below)
+        float f = 400.0f;
+        float xy_center = 500.0f;
+        p0.x = xy_center + v_parts[i].vertices[j].x * f;
+        p0.y = xy_center + v_parts[i].vertices[j].z * f;
+        p1.x = xy_center + v_parts[i].vertices[j + 1].x * f;
+        p1.y = xy_center + v_parts[i].vertices[j + 1].z * f;
+        p2.x = xy_center + v_parts[i].vertices[j + 2].x * f;
+        p2.y = xy_center + v_parts[i].vertices[j + 2].z * f;
+
+        //      vec3 vn = cross(p1 - p0, p2 - p0);
+        vec3 vn = cross(v_parts[i].vertices[j + 1] - v_parts[i].vertices[j], v_parts[i].vertices[j + 2] - v_parts[i].vertices[j]);
+        float f_len = len(vn);
+        vn = vn / f_len;
+
+        vec3 light = vec3(0.1, 0.0, -1.0); // play with these = fun (needs realtime manipulation)
+        float ff = dot(vn, light);
+        if (ff > 0.0) // back face culling, i.e. remove polygons, that face back from light (later: from the camera)
+        {
+          int gray = (int)(ff * 255);
+          TGAColor col = TGAColor(gray, gray, gray, 255);
+          triangle_filled(image, p0, p1, p2, col);
+        }
+      }
+    }
+  }
+}
+
+void lesson3(TGAImage & image) // draw african head with z-buffer
+{
+  std::vector <obj::CPart> v_parts;
+  obj::CLoader_OBJ objload;
+
+  objload.loadOBJParts("african_head.obj", v_parts);
+
+  std::cout << v_parts.size() << std::endl;
+  for (int i = 0; i < v_parts.size(); i++)
+  {
+    for (int j = 0; j < v_parts[i].vertices.size(); j += 3)
+    {
+      vec3 p0, p1, p2; // must go to vec3 now, in order to compute cross product (s.below)
+      float f = 400.0f;
+      float xy_center = 500.0f;
+      p0.x = xy_center + v_parts[i].vertices[j].x * f;
+      p0.y = xy_center + v_parts[i].vertices[j].z * f;
+      p1.x = xy_center + v_parts[i].vertices[j + 1].x * f;
+      p1.y = xy_center + v_parts[i].vertices[j + 1].z * f;
+      p2.x = xy_center + v_parts[i].vertices[j + 2].x * f;
+      p2.y = xy_center + v_parts[i].vertices[j + 2].z * f;
+
+      //      vec3 vn = cross(p1 - p0, p2 - p0);
+      vec3 vn = cross(v_parts[i].vertices[j + 1] - v_parts[i].vertices[j], v_parts[i].vertices[j + 2] - v_parts[i].vertices[j]);
+      float f_len = len(vn);
+      vn = vn / f_len;
+
+      vec3 light = vec3(0.1, 0.0, -1.0); // play with these = fun (needs realtime manipulation)
+      float ff = dot(vn, light);
+      if (ff > 0.0) // back face culling, i.e. remove polygons, that face back from light (later: from the camera)
+      {
+        int gray = (int)(ff * 255);
+        TGAColor col = TGAColor(gray, gray, gray, 255);
+        triangle_filled(image, zbuf, p0, p1, p2, col);
+      }
+    }
+  }
+}
+
 int main(int argc, char** argv)
 {
 	TGAImage image(1000, 1000, TGAImage::RGB);
@@ -100,7 +183,9 @@ int main(int argc, char** argv)
 //  lesson1(image);
 
   lesson2(image);
-  lesson2b(image);
+//  lesson2b(image);
+///  lesson2c(image);
+  lesson3(image);
 
   image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
   image.write_tga_file("output.tga");
