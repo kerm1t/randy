@@ -1,4 +1,5 @@
-cmake_minimum_required (VERSION 2.8.11)
+cmake_minimum_required (VERSION 3.6)
+
 project (rendy)
 
-add_executable(rendy main.cpp tgaimage.cpp mdl_wavefront.hpp draw_lib.hpp algebra.h tgaimage.h types.h)
+add_executable(rendy src/main.cpp src/tgaimage.cpp src/mdl_wavefront.hpp src/draw_lib.hpp src/algebra.h src/tgaimage.h src/types.h)

@@ -1,3 +1,0 @@
-C:/Projekte/rendy/CMakeFiles/rendy.dir
-C:/Projekte/rendy/CMakeFiles/ALL_BUILD.dir
-C:/Projekte/rendy/CMakeFiles/ZERO_CHECK.dir
